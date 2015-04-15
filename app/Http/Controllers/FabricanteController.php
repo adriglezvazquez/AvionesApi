@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use Response;
-
 //cargamos fabricante porque lo usamos mas abajo
 use App\Fabricante;
 
@@ -57,16 +55,14 @@ class FabricanteController extends Controller {
 
 		//insertamos los datos recibidos en la tabla 
 		//devolvemos el codigo 201 que significa que se han insertados los datos
-		
+
 		$nuevoFabricante = Fabricante::create($request->all());
-		
+
 		//devolvemos la respuesta Http 201 (created) + los datos del nuevo fabricante + una cabecera de Location
-		
-		$respuesta = Response::make(json_encode(['data'=>$nuevoFabricante]),201)->header('Location','http://www.dominio.local/fabricante/'.$nuevoFabricante->id)->header('Content-Type','application/json');
-		
+
+		$respuesta = Response::make(json_encode(['data' => $nuevoFabricante]), 201)->header('Location', 'http://www.dominio.local/fabricante/' . $nuevoFabricante->id)->header('Content-Type', 'application/json');
+
 		return $respuesta;
-		
-		
 	}
 
 	/**
@@ -118,6 +114,37 @@ class FabricanteController extends Controller {
 	 */
 	public function destroy($id) {
 		//
+		//borrado de fabricante
+		// fabricante/89 por DELETE
+		//comprobamos si el fabricante existe o no existe
+
+		$fabricante= Fabricante::find($id);
+
+		//chequeamos si existe
+
+		if (!$fabricante) {
+			//devolvemos codigo http404
+
+			return response()->json([
+						'errors' => Array(['code' => 404, 'message' => 'No se encuentra un fabricante con ese codigo'
+							])], 404);
+		}//if
+		
+		
+		$fabricante->delete();
+		
+		return response()->json([
+					'code' => '204', 'message' => 'Se ha eliminado correctamente el fabricante'
+						], 204);
+		
+		//borramos el fabricante y devolvemos codigo 204 (no content) sin contenido
+		//este codigo no muestra texto en el body
+		
+		
+		
+		
+		
+		
 	}
 
 }
