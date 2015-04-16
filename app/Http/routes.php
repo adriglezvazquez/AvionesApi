@@ -26,8 +26,13 @@ Route::controllers([
 //creamos las rutas nuevas que tendran en cuenta los controllers 
 
 Route::resource('fabricantes','FabricanteController',['except'=>['create']]);
-Route::resource('aviones','AvionController');
+Route::resource('aviones','AvionController',['only'=>['index','show']]);
 
 Route::get('/', function(){
 	return "Bienvenido API RESTFUL AVIONES";
 });
+
+
+//recurso anindado /fabricantes/xx/aviones
+Route::resource('fabricantes.aviones','FabricanteAvionController',['except'=>['edit','create','show']]);
+

@@ -73,9 +73,9 @@ class FabricanteController extends Controller {
 	 */
 	public function show($id) {
 		//corresponde con la ruta /fabricantes/{fabbricante}
-		$frabricante = Fabricante::find($id);
+		$fabricante = Fabricante::find($id);
 
-		if (!$favrucabte) {
+		if (!$fabricante) {
 			//se devuelve un error con los errores detectados y codigo 404
 
 			return response()->json([
