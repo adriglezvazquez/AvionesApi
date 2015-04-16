@@ -102,8 +102,80 @@ class FabricanteController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id) {
-		//
+	public function update($id, Request $request) {
+		//vamos a actualizar un fabricante
+		//comprobamos si el fabricante existe.  En otro caso devolvemos error
+
+
+		$fabricante = Fabricante::find($id);
+
+		//si no existe mostrar error
+		if (!$fabricante) {
+			return response()->json([
+						'errors' => Array(['code' => 404, 'message' => 'No se encuentra un fabricante con ese codigo'
+							])], 404);
+		}
+
+		//almacenamos en variables para facilitar el uso, los campos recibidos
+
+		$nombre = $request->input('nombre');
+		$direccion = $request->input('direccion');
+		$telefono = $request->input('telefono');
+
+
+		if ($request->method() == 'PATCH') {
+			//actualizacion parcial de datos
+
+			$bandera = false;
+			if ($nombre != null && $nombre != '') {
+				$fabricante->nombre = $nombre;
+				$bandera = true;
+			}
+
+
+			if ($direccion != null && $direccion != '') {
+				$fabricante->direccion = $direccion;
+				$bandera = true;
+			}
+
+			if ($telefono != null && $telefono != '') {
+				$fabricante->$telefono = $telefono;
+				$bandera = true;
+			}
+
+			if ($bandera) {
+				//devolvemos un codigo 200
+
+				return response()->json([
+							'status' => 'ok', 'data' => $fabricante]
+								, 200);
+			} else {
+
+				return response()->json([
+							'errors' => Array(['code' => 304, 'message' => 'No se ha modificado ningun dato'
+								])], 304);
+			}//else
+		}
+		
+		//metodo PUT actualizamos todos los campos
+		//comprobamos que recibimos todos
+		if (!$nombre || !$direccion || !$telefono) {
+			//se devuelve codigo 422 unprocessable Entity
+
+			return response()->json([
+						'errors' => Array(['code' => 422, 'message' => 'Faltan valores para completar precesamiento'
+							])], 422);
+		}
+
+
+		//Actualizamos los 3 campos
+		$nombre = $request->input('nombre');
+		$direccion = $request->input('direccion');
+		$telefono = $request->input('telefono');
+
+		return response()->json([
+					'status' => 'ok', 'data' => $fabricante]
+						, 200);
 	}
 
 	/**
@@ -118,7 +190,7 @@ class FabricanteController extends Controller {
 		// fabricante/89 por DELETE
 		//comprobamos si el fabricante existe o no existe
 
-		$fabricante= Fabricante::find($id);
+		$fabricante = Fabricante::find($id);
 
 		//chequeamos si existe
 
@@ -129,22 +201,16 @@ class FabricanteController extends Controller {
 						'errors' => Array(['code' => 404, 'message' => 'No se encuentra un fabricante con ese codigo'
 							])], 404);
 		}//if
-		
-		
+
+
 		$fabricante->delete();
-		
+
 		return response()->json([
 					'code' => '204', 'message' => 'Se ha eliminado correctamente el fabricante'
 						], 204);
-		
+
 		//borramos el fabricante y devolvemos codigo 204 (no content) sin contenido
 		//este codigo no muestra texto en el body
-		
-		
-		
-		
-		
-		
 	}
 
 }
