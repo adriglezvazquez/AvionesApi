@@ -4,27 +4,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Fabricante extends Model {
 
-	//Defini la tabla myqsl que usara este modelo
-	
+	// Definir la tabla MySQL que usará este modelo.
 	protected $table="fabricantes";
-	
-	//atributos del nombre de la tabla que se pueden rellenar de forma masiva
-	
-	protected $fillable= array('nombre','direccion','telefono');
-	
-	//ocultamos los campos de timesptam en las consuktas
-	
-	protected $hiden=['created_at','update_at'];
-	
-	
-		//Relacion de fabricante con aviones:
-	
-	public function aviones() {
-		
-		//la relacion seria: 1 fabricante tiene muchos avioenes:
-		
+
+	// Atributos de la tabla que se pueden rellenar de forma masiva.
+	protected $fillable=array('nombre','direccion','telefono');
+
+	// Ocultamos los campos de timestamps en las consultas.
+	protected $hidden=['created_at','updated_at'];
+
+	// Relación de Fabricante con Aviones:
+	public function aviones()
+	{
+		// La relación sería: 1 fabricante tiene muchos aviones.
 		return $this->hasMany('App\Avion');
-		
 	}
 
 }

@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 use App\Avion;
 
+// Activamos caché.
+use Illuminate\Support\Facades\Cache;
+
 class AvionController extends Controller {
 
 	/**
@@ -16,15 +19,19 @@ class AvionController extends Controller {
 	 */
 	public function index()
 	{
-		//devuelve todos los aviones
-		
-		
-		return response()->json([
-					'status' => 'ok', 'data' => Avion::all()
-						], 200);
+
+		$listaAviones=Cache::remember('cacheTodosAviones',5,function()
+		{
+			return Avion::all();
+		});
+
+		// Devuelve la lista de todos los aviones desde caché.
+		return response()->json(['status'=>'ok','data'=>$listaAviones],200);
+
+		// Devuelve la lista de todos los aviones sin caché.
+		// return response()->json(['status'=>'ok','data'=>Avion::all()],200);
 	}
 
-	
 
 	/**
 	 * Display the specified resource.
@@ -34,19 +41,15 @@ class AvionController extends Controller {
 	 */
 	public function show($id)
 	{
-		//corresponde con la ruta /avions/{fabbricante}
-		$avion = Avion::find($id);
+		// Buscamos ese avion y si lo encuentra muestra la info.
+		$avion=Avion::find($id);
 
-		if (!$avion) {
-			//se devuelve un error con los errores detectados y codigo 404
-
-			return response()->json([
-						'errors' => Array(['code' => 422, 'message' => 'No se encuentra un avion con ese codigo'
-							])], 422);
+		if (!$avion)
+		{
+			return response()->json(['errors'=>['code'=>404,'message'=>'No se encuentra un avion con ese código']],404);
 		}
 
-		return response()->json(['status' => 'ok', 'data' => $avion], 200);
+		return response()->json(['status'=>'ok','data'=>$avion],200);
 	}
 
-	
 }
